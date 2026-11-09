@@ -1,13 +1,12 @@
 /**
  * ============================================================================
- * TEMANBELAJAR — SCRIPT INTERAKTIVITAS LENGKAP 5 HALAMAN (M07)
+ * TEMANBELAJAR | SCRIPT INTERAKTIVITAS LENGKAP 5 HALAMAN (M07)
  * Mencakup:
- * 1. Navigasi SPA 5 Halaman (Dashboard, Task Manager, Schedule Matcher,
- *    Forum Q&A Anonim, Peer Evaluation) & Mobile Drawer Toggle
- * 2. Klaim Tugas Mandiri, Filter Status, & Sinkronisasi Real-Time ke Dashboard
- * 3. Interaksi Matriks Schedule Matcher & Penetapan Irisan Jadwal 4/4 (KF-2)
- * 4. Validasi Form Forum Q&A Anonim, Toggle Privasi, & Balasan AI Helper (KF-4)
- * 5. Interaksi Rating Bintang Rahasia pada Peer Evaluation (KF-5)
+ * 1. Navigasi SPA 5 Halaman & Mobile Drawer Toggle
+ * 2. Klaim Tugas Mandiri, Filter Status, Quick Add Task Form, & Sinkronisasi Dashboard
+ * 3. Matriks Interaktif Schedule Matcher dengan Inisial Anggota per Sel (KF-2)
+ * 4. Validasi Form Forum Q&A Anonim, Sakelar Privasi, AI Helper, & Vote Terbantu
+ * 5. Rating Bintang Interaktif dengan Label Makna Dinamis pada Peer Evaluation
  * ============================================================================
  */
 
@@ -27,6 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let activeFilter = "all";
   let toastTimer = null;
+  let nextTaskNum = 5;
 
   /**
    * Menampilkan pesan konfirmasi singkat (Toast) di bagian atas halaman
@@ -40,11 +40,11 @@ document.addEventListener("DOMContentLoaded", () => {
     if (toastTimer) clearTimeout(toastTimer);
     toastTimer = setTimeout(() => {
       toastFeedback.hidden = true;
-    }, 3800);
+    }, 3600);
   }
 
   // ==========================================================================
-  // 1. KOMPONEN 1 & 2: Navigasi Antarhalaman (5 Halaman Figma) & Mobile Drawer
+  // 1. KOMPONEN 1 & 2: Navigasi Antarhalaman (5 Halaman) & Mobile Drawer
   // ==========================================================================
   function openMobileSidebar() {
     sidebar.classList.add("open");
@@ -107,7 +107,6 @@ document.addEventListener("DOMContentLoaded", () => {
     sidebarBackdrop.addEventListener("click", closeMobileSidebar);
   }
 
-  // Pintasan dari Dashboard ke Schedule Matcher & Task Manager
   if (btnGotoSchedule) {
     btnGotoSchedule.addEventListener("click", () => {
       switchPageView("view-schedule-matcher");
@@ -124,7 +123,7 @@ document.addEventListener("DOMContentLoaded", () => {
     btnNotification.addEventListener("click", () => {
       if (notifDot) notifDot.hidden = true;
       switchPageView("view-dashboard");
-      showToast("🔔 Pengingat Otomatis (H-2 Jam): Jadwal Kumpul Kelompok hari ini pukul 19:00 WIB.");
+      showToast("Pengingat Otomatis (H-2 Jam): Sesi diskusi kelompok hari ini pukul 19:00 WIB.");
     });
   }
 
@@ -136,6 +135,13 @@ document.addEventListener("DOMContentLoaded", () => {
   const emptyState = document.getElementById("empty-state");
   const dashUnclaimedList = document.getElementById("dash-unclaimed-list");
   const dashUnclaimedBadge = document.getElementById("dash-unclaimed-badge");
+  const navBadgeUnclaimed = document.getElementById("nav-badge-unclaimed");
+
+  const addTaskForm = document.getElementById("add-task-form");
+  const taskTitleInput = document.getElementById("task-title-input");
+  const taskWeightInput = document.getElementById("task-weight-input");
+  const taskDeadlineInput = document.getElementById("task-deadline-input");
+  const taskFormError = document.getElementById("task-form-error");
 
   function syncTasksAndDashboard() {
     const cards = Array.from(taskCardsContainer.querySelectorAll(".task-card"));
@@ -156,6 +162,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const unclaimedItems = [];
 
     cards.forEach((card) => {
+      const code = card.getAttribute("data-id") || "TB-00";
       const status = card.getAttribute("data-status") || "tersedia";
       const owner = card.getAttribute("data-owner") || "";
       const title = card.getAttribute("data-title") || "Sub-Tugas";
@@ -171,7 +178,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       if (status === "tersedia") {
-        unclaimedItems.push({ title, weight, deadline });
+        unclaimedItems.push({ code, title, weight, deadline });
       }
     });
 
@@ -180,6 +187,11 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("badge-tersedia").textContent = String(statusCounts.tersedia);
     document.getElementById("badge-dikerjakan").textContent = String(statusCounts.dikerjakan);
     document.getElementById("badge-selesai").textContent = String(statusCounts.selesai);
+
+    if (navBadgeUnclaimed) {
+      navBadgeUnclaimed.textContent = String(statusCounts.tersedia);
+      navBadgeUnclaimed.hidden = statusCounts.tersedia === 0;
+    }
 
     // Update bar beban tugas di Task Manager & daftar distribusi di Dashboard
     const updateMemberUI = (key, count) => {
@@ -190,7 +202,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (tmCount) tmCount.textContent = `${count} tugas`;
       if (dashCount) dashCount.textContent = `${count} tugas`;
       if (tmBar) {
-        const widthPct = count === 0 ? 0 : Math.min(100, count * 35);
+        const widthPct = count === 0 ? 0 : Math.min(100, count * 45);
         tmBar.style.width = `${widthPct}%`;
       }
     };
@@ -210,8 +222,11 @@ document.addEventListener("DOMContentLoaded", () => {
       if (unclaimedItems.length === 0) {
         dashUnclaimedList.innerHTML = `
           <div class="unclaimed-preview-item">
-            <p class="unclaimed-preview-title">Semua sub-tugas telah diklaim!</p>
-            <p class="unclaimed-preview-meta">Tidak ada sub-tugas yang menunggu penanggung jawab.</p>
+            <div>
+              <p class="unclaimed-preview-title">Seluruh sub-tugas telah memiliki penanggung jawab</p>
+              <p class="unclaimed-preview-meta">Tidak ada tugas yang tertunda pembagiannya.</p>
+            </div>
+            <span class="status-tag tag-green">Tuntas</span>
           </div>
         `;
       } else {
@@ -219,23 +234,44 @@ document.addEventListener("DOMContentLoaded", () => {
           const div = document.createElement("div");
           div.className = "unclaimed-preview-item";
           div.innerHTML = `
-            <p class="unclaimed-preview-title">${item.title}</p>
-            <p class="unclaimed-preview-meta">Beban: ${item.weight} &nbsp;·&nbsp; Deadline: ${item.deadline}</p>
-            <p class="unclaimed-preview-meta">Penanggung Jawab: Belum ada</p>
+            <div>
+              <p class="unclaimed-preview-title"><span class="mono-text">${item.code}</span> · ${item.title}</p>
+              <p class="unclaimed-preview-meta">Beban: ${item.weight} · Tenggat: ${item.deadline} · Penanggung Jawab: Belum ada</p>
+            </div>
+            <span class="pill-badge">Tersedia</span>
           `;
           dashUnclaimedList.appendChild(div);
         });
       }
     }
 
-    // Update kartu progres di Dashboard
+    // Update kartu progres & keseimbangan di Dashboard
     const completedBase = 2 + statusCounts.selesai;
-    const totalProjectTasks = 5;
+    const totalProjectTasks = Math.max(5, cards.length + 1);
     const pct = Math.min(100, Math.round((completedBase / totalProjectTasks) * 100));
     const dashProgressText = document.getElementById("dash-progress-text");
+    const dashProgressPct = document.getElementById("dash-progress-pct");
     const dashProgressBar = document.getElementById("dash-progress-bar");
-    if (dashProgressText) dashProgressText.textContent = `${completedBase}/${totalProjectTasks} Selesai (${pct}%)`;
+
+    if (dashProgressText) dashProgressText.textContent = `${completedBase}/${totalProjectTasks} Selesai`;
+    if (dashProgressPct) dashProgressPct.textContent = `${pct}%`;
     if (dashProgressBar) dashProgressBar.style.width = `${pct}%`;
+
+    const dashBalanceTitle = document.getElementById("dash-balance-title");
+    const dashBalanceTag = document.getElementById("dash-balance-tag");
+    if (statusCounts.tersedia === 0) {
+      if (dashBalanceTitle) dashBalanceTitle.textContent = "Semua Terklaim";
+      if (dashBalanceTag) {
+        dashBalanceTag.textContent = "Terkendali";
+        dashBalanceTag.className = "status-tag tag-green";
+      }
+    } else {
+      if (dashBalanceTitle) dashBalanceTitle.textContent = "Perlu Klaim Tugas";
+      if (dashBalanceTag) {
+        dashBalanceTag.textContent = `${statusCounts.tersedia} Kosong`;
+        dashBalanceTag.className = "status-tag tag-amber";
+      }
+    }
 
     applyTaskFilter();
   }
@@ -278,14 +314,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const title = card.getAttribute("data-title") || "Sub-tugas";
       const badge = card.querySelector(".status-badge");
-      const picSpan = card.querySelector(".task-pic span");
+      const picStrong = card.querySelector(".task-pic strong");
       const actions = card.querySelector(".task-actions");
 
       if (btn.classList.contains("btn-claim")) {
         card.setAttribute("data-status", "dikerjakan");
         card.setAttribute("data-owner", "Rian (Kamu)");
-        if (badge) badge.textContent = "Dikerjakan";
-        if (picSpan) picSpan.textContent = "Rian (Kamu)";
+        if (badge) {
+          badge.className = "status-badge badge-dikerjakan";
+          badge.textContent = "Dikerjakan";
+        }
+        if (picStrong) picStrong.textContent = "Rian (Kamu)";
         if (actions) {
           actions.innerHTML = `
             <button type="button" class="btn-secondary btn-unclaim">Batalkan Klaim</button>
@@ -293,31 +332,108 @@ document.addEventListener("DOMContentLoaded", () => {
           `;
         }
         syncTasksAndDashboard();
-        showToast(`Berhasil! Tugas "${title}" telah diklaim atas nama Rian (Kamu).`);
+        showToast(`Berhasil! Sub-tugas "${title}" telah diklaim atas nama Rian (Kamu).`);
       } else if (btn.classList.contains("btn-unclaim")) {
         card.setAttribute("data-status", "tersedia");
         card.setAttribute("data-owner", "");
-        if (badge) badge.textContent = "Tersedia";
-        if (picSpan) picSpan.textContent = "Belum ada";
+        if (badge) {
+          badge.className = "status-badge badge-tersedia";
+          badge.textContent = "Tersedia";
+        }
+        if (picStrong) picStrong.textContent = "Belum ada";
         if (actions) {
           actions.innerHTML = `<button type="button" class="btn-primary btn-claim">Klaim Tugas</button>`;
         }
         syncTasksAndDashboard();
-        showToast(`Klaim pada "${title}" dibatalkan.`);
+        showToast(`Klaim pada "${title}" telah dilepas kembali.`);
       } else if (btn.classList.contains("btn-complete")) {
         card.setAttribute("data-status", "selesai");
-        if (badge) badge.textContent = "Selesai";
+        if (badge) {
+          badge.className = "status-badge badge-selesai";
+          badge.textContent = "Selesai";
+        }
         if (actions) {
           actions.innerHTML = `<button type="button" class="btn-secondary btn-unclaim">Buka Kembali</button>`;
         }
         syncTasksAndDashboard();
-        showToast(`Mantap! Tugas "${title}" telah ditandai Selesai.`);
+        showToast(`Sub-tugas "${title}" telah ditandai Selesai.`);
       }
     });
   }
 
+  // Form Validasi Tambah Sub-Tugas Baru di Task Manager
+  if (addTaskForm) {
+    addTaskForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const titleVal = taskTitleInput.value.trim();
+      const weightVal = taskWeightInput.value.trim();
+      const deadlineVal = taskDeadlineInput.value.trim();
+
+      if (titleVal.length < 5) {
+        taskFormError.textContent = "Nama sub-tugas wajib diisi minimal 5 karakter.";
+        taskFormError.hidden = false;
+        taskTitleInput.focus();
+        return;
+      }
+
+      if (!weightVal) {
+        taskFormError.textContent = "Silakan pilih bobot beban tugas terlebih dahulu.";
+        taskFormError.hidden = false;
+        taskWeightInput.focus();
+        return;
+      }
+
+      if (!deadlineVal) {
+        taskFormError.textContent = "Tenggat waktu wajib diisi (contoh: 2 Nov).";
+        taskFormError.hidden = false;
+        taskDeadlineInput.focus();
+        return;
+      }
+
+      taskFormError.hidden = true;
+      const codeId = `TB-0${nextTaskNum++}`;
+      const dotClass =
+        weightVal === "Ringan" ? "dot-light" : weightVal === "Berat" ? "dot-heavy" : "dot-medium";
+
+      const newCard = document.createElement("article");
+      newCard.className = "task-card";
+      newCard.setAttribute("data-id", codeId);
+      newCard.setAttribute("data-status", "tersedia");
+      newCard.setAttribute("data-owner", "");
+      newCard.setAttribute("data-title", titleVal);
+      newCard.setAttribute("data-weight", weightVal);
+      newCard.setAttribute("data-deadline", deadlineVal);
+
+      newCard.innerHTML = `
+        <div class="task-info">
+          <div class="task-title-row">
+            <span class="task-code mono-text">${codeId}</span>
+            <h3 class="task-title"></h3>
+            <span class="status-badge badge-tersedia">Tersedia</span>
+          </div>
+          <div class="task-meta">
+            <span class="meta-item"><span class="weight-dot ${dotClass}"></span>Beban: ${weightVal}</span>
+            <span class="meta-item mono-text">Tenggat: </span>
+            <span class="meta-item task-pic">Penanggung Jawab: <strong>Belum ada</strong></span>
+          </div>
+        </div>
+        <div class="task-actions">
+          <button type="button" class="btn-primary btn-claim">Klaim Tugas</button>
+        </div>
+      `;
+
+      newCard.querySelector(".task-title").textContent = titleVal;
+      newCard.querySelectorAll(".meta-item")[1].textContent = `Tenggat: ${deadlineVal}`;
+
+      taskCardsContainer.prepend(newCard);
+      addTaskForm.reset();
+      syncTasksAndDashboard();
+      showToast(`Sub-tugas baru "${titleVal}" (${codeId}) berhasil ditambahkan.`);
+    });
+  }
+
   // ==========================================================================
-  // 3. HALAMAN 3: Schedule Matcher (Matriks Input Jadwal & Irisan 4/4)
+  // 3. HALAMAN 3: Schedule Matcher (Matriks Input Jadwal & Irisan Anggota)
   // ==========================================================================
   const slotButtons = document.querySelectorAll(".slot-btn");
   const selectedSlotsCount = document.getElementById("selected-slots-count");
@@ -336,17 +452,29 @@ document.addEventListener("DOMContentLoaded", () => {
       const day = btn.getAttribute("data-day");
       const time = btn.getAttribute("data-time");
       const others = parseInt(btn.getAttribute("data-others") || "0", 10);
+      const otherNames = btn.getAttribute("data-names") || "";
       const totalAvailable = others + (isSelected ? 1 : 0);
 
       if (isSelected) selectedCount += 1;
 
+      const namesList = [];
+      if (isSelected) namesList.push("RN");
+      if (otherNames) {
+        otherNames.split("·").forEach((n) => {
+          if (n) namesList.push(n);
+        });
+      }
+
       const heatCell = document.querySelector(`[data-heat="${day}-${time}"]`);
       if (heatCell) {
-        heatCell.textContent = `${totalAvailable}/4`;
+        heatCell.innerHTML = `
+          <span class="heat-ratio">${totalAvailable}/4</span>
+          <span class="heat-names">${namesList.length ? namesList.join("·") : "Kosong"}</span>
+        `;
         heatCell.className = "heat-cell";
         if (totalAvailable === 4) {
           heatCell.classList.add("heat-match");
-          fullMatchSlot = `${day}, ${time} - 21:00`;
+          fullMatchSlot = `${day}, ${time} - 21:00 WIB`;
         } else if (totalAvailable >= 2) {
           heatCell.classList.add("heat-mid");
         }
@@ -358,53 +486,62 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     if (fullMatchSlot) {
-      if (selectedSlotsDetail) selectedSlotsDetail.textContent = `Termasuk ${fullMatchSlot}.`;
+      if (selectedSlotsDetail) selectedSlotsDetail.textContent = `Termasuk slot irisan utama ${fullMatchSlot}.`;
       if (bestMatchTitle) bestMatchTitle.textContent = fullMatchSlot;
-      if (bestMatchSubtitle) bestMatchSubtitle.textContent = "4/4 Anggota Cocok!";
+      if (bestMatchSubtitle) bestMatchSubtitle.textContent = "4/4 Anggota Cocok (Rian, Budi, Siti, Andi)";
     } else {
-      if (selectedSlotsDetail) selectedSlotsDetail.textContent = "Pilih Rabu 19:00 agar cocok 4/4 anggota.";
-      if (bestMatchTitle) bestMatchTitle.textContent = "Belum ada irisan 4/4";
-      if (bestMatchSubtitle) bestMatchSubtitle.textContent = "Maksimal 3/4 anggota cocok saat ini.";
+      if (selectedSlotsDetail) selectedSlotsDetail.textContent = "Pilih slot Rabu 19:00 agar keempat anggota bertemu di waktu yang sama.";
+      if (bestMatchTitle) bestMatchTitle.textContent = "Belum ada irisan 4/4 anggota";
+      if (bestMatchSubtitle) bestMatchSubtitle.textContent = "Maksimal 3/4 anggota cocok pada pilihan saat ini.";
     }
   }
 
   slotButtons.forEach((btn) => {
     btn.addEventListener("click", () => {
       const isSelected = btn.classList.toggle("selected");
-      btn.textContent = isSelected ? "✓" : "—";
+      btn.textContent = isSelected ? "Bisa" : "Kosong";
       updateScheduleMatcher();
     });
   });
 
   if (btnSaveSchedule) {
     btnSaveSchedule.addEventListener("click", () => {
-      showToast("✅ Jadwal kosongmu berhasil disimpan dan peta irisan kelompok telah diperbarui!");
+      showToast("Jadwal kosongmu berhasil disimpan dan peta irisan kelompok telah diperbarui.");
     });
   }
 
   if (btnConfirmSchedule) {
     btnConfirmSchedule.addEventListener("click", () => {
-      showToast("✅ Jadwal Kumpul Rabu, 19:00 WIB berhasil ditetapkan! Pengingat otomatis H-2 jam diaktifkan.");
+      showToast("Jadwal Kumpul Rabu, 19:00 WIB berhasil ditetapkan! Pengingat H-2 jam diaktifkan.");
     });
   }
 
   // ==========================================================================
-  // 4. KOMPONEN 5: Forum Q&A Anonim (Validasi Form, Toggle Anonim, & AI Helper)
+  // 4. KOMPONEN 5: Forum Q&A Anonim (Validasi Form, Sakelar Privasi, & AI Helper)
   // ==========================================================================
   const qnaForm = document.getElementById("qna-form");
   const qnaInput = document.getElementById("qna-input");
   const qnaAnonCheckbox = document.getElementById("qna-anon-checkbox");
   const qnaPrivacyNote = document.getElementById("qna-privacy-note");
+  const anonStatusPill = document.getElementById("anon-status-pill");
   const qnaError = document.getElementById("qna-error");
   const btnAskAi = document.getElementById("btn-ask-ai");
   const discussionFeed = document.getElementById("discussion-feed");
 
-  if (qnaAnonCheckbox && qnaPrivacyNote) {
+  if (qnaAnonCheckbox) {
     qnaAnonCheckbox.addEventListener("change", () => {
       if (qnaAnonCheckbox.checked) {
-        qnaPrivacyNote.textContent = "🛡️ Identitasmu tidak ditampilkan pada kiriman.";
+        if (qnaPrivacyNote) qnaPrivacyNote.textContent = "Identitasmu disembunyikan dari anggota lain.";
+        if (anonStatusPill) {
+          anonStatusPill.textContent = "Mode Anonim Aktif";
+          anonStatusPill.className = "status-tag tag-green";
+        }
       } else {
-        qnaPrivacyNote.textContent = "👤 Kiriman akan ditampilkan atas nama Rian (Smt 3).";
+        if (qnaPrivacyNote) qnaPrivacyNote.textContent = "Ditampilkan sebagai Rian (Semester 3).";
+        if (anonStatusPill) {
+          anonStatusPill.textContent = "Mode Nama Asli";
+          anonStatusPill.className = "status-tag tag-amber";
+        }
       }
     });
   }
@@ -413,15 +550,24 @@ document.addEventListener("DOMContentLoaded", () => {
     const article = document.createElement("article");
     article.className = "discussion-card";
 
-    const authorName = isAnonymous ? "Anggota Anonim" : "Rian (Smt 3)";
-    const avatarLabel = isAnonymous ? "👤" : "R";
+    const authorName = isAnonymous ? "Anggota Anonim" : "Rian (Semester 3)";
+    const badgeText = isAnonymous ? "Identitas Terlindungi" : "Anggota Kelompok";
 
     article.innerHTML = `
       <div class="post-author-row">
-        <span class="anon-avatar" aria-hidden="true">${avatarLabel}</span>
+        <span class="anon-avatar" aria-hidden="true">
+          ${
+            isAnonymous
+              ? `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>`
+              : `<span class="mono-text" style="font-size:0.75rem;font-weight:700;">RN</span>`
+          }
+        </span>
         <div>
-          <h3 class="post-author">${authorName}</h3>
-          <p class="post-time">Baru saja · Materi UX</p>
+          <div class="author-line">
+            <h3 class="post-author">${authorName}</h3>
+            <span class="anon-verified-badge">${badgeText}</span>
+          </div>
+          <p class="post-time">Baru saja · Topik: Diskusi Kelompok</p>
         </div>
       </div>
       <p class="post-body"></p>
@@ -429,9 +575,12 @@ document.addEventListener("DOMContentLoaded", () => {
         includeAiReply
           ? `
         <div class="ai-helper-box">
-          <p class="ai-helper-title">✨ AI Helper</p>
+          <div class="ai-box-header">
+            <span class="ai-badge">AI Helper</span>
+            <span class="ai-sub">Ringkasan otomatis</span>
+          </div>
           <p class="ai-helper-text">
-            Format Given-When-Then yang kamu tulis sudah tepat! Pastikan bagian <strong>Then</strong> menyebutkan perubahan antarmuka yang terukur (mis. nama penanggung jawab muncul otomatis dan status berubah menjadi "Dikerjakan").
+            Struktur Given-When-Then yang kamu tulis sudah memenuhi kaidah pengujian fungsional. Pastikan bagian <strong>Then</strong> menyebutkan perubahan antarmuka yang dapat diverifikasi langsung oleh penguji.
           </p>
         </div>
       `
@@ -449,7 +598,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const text = qnaInput.value.trim();
 
       if (text.length < 10) {
-        qnaError.textContent = "⚠️ Pertanyaan wajib diisi minimal 10 karakter sebelum dikirim ke forum.";
+        qnaError.textContent = "Pertanyaan wajib diisi minimal 10 karakter sebelum dikirim ke forum.";
         qnaError.hidden = false;
         qnaInput.focus();
         return;
@@ -461,8 +610,8 @@ document.addEventListener("DOMContentLoaded", () => {
       qnaInput.value = "";
       showToast(
         isAnon
-          ? "✅ Pertanyaan berhasil dikirim secara Anonim tanpa menampilkan nama & foto profil!"
-          : "✅ Pertanyaan berhasil dikirim ke Forum Diskusi!"
+          ? "Pertanyaan berhasil dikirim sebagai Anggota Anonim."
+          : "Pertanyaan berhasil dikirim ke Forum Diskusi."
       );
     });
   }
@@ -471,7 +620,7 @@ document.addEventListener("DOMContentLoaded", () => {
     btnAskAi.addEventListener("click", () => {
       const text = qnaInput.value.trim();
       if (text.length < 10) {
-        qnaError.textContent = "⚠️ Ketik pertanyaan minimal 10 karakter terlebih dahulu untuk bertanya ke AI.";
+        qnaError.textContent = "Ketik pertanyaan minimal 10 karakter terlebih dahulu untuk meminta ringkasan AI.";
         qnaError.hidden = false;
         qnaInput.focus();
         return;
@@ -479,34 +628,59 @@ document.addEventListener("DOMContentLoaded", () => {
       qnaError.hidden = true;
       createForumPost(text, qnaAnonCheckbox.checked, true);
       qnaInput.value = "";
-      showToast("✨ AI Helper telah menambahkan penjelasan pada utas pertanyaanmu!");
+      showToast("AI Helper telah menambahkan ringkasan penjelasan pada pertanyaanmu.");
+    });
+  }
+
+  // Tombol Reaksi Terbantu pada Diskusi
+  if (discussionFeed) {
+    discussionFeed.addEventListener("click", (event) => {
+      const target = event.target;
+      if (!(target instanceof HTMLElement)) return;
+      const btn = target.closest(".btn-helpful");
+      if (!btn) return;
+
+      const countSpan = btn.querySelector(".like-count");
+      let likes = parseInt(btn.getAttribute("data-likes") || "3", 10);
+      const isVoted = btn.classList.toggle("voted");
+      likes = isVoted ? likes + 1 : likes - 1;
+      btn.setAttribute("data-likes", String(likes));
+      if (countSpan) countSpan.textContent = String(likes);
     });
   }
 
   // ==========================================================================
-  // 5. HALAMAN 5: Peer Evaluation (Rating Bintang Interaktif Rahasia)
+  // 5. HALAMAN 5: Peer Evaluation (Rating Bintang & Label Makna Dinamis)
   // ==========================================================================
   const evalCards = document.querySelectorAll(".eval-card");
   const peerEvalForm = document.getElementById("peer-eval-form");
   const evalStatusBanner = document.getElementById("eval-status-banner");
   const btnSubmitEval = document.getElementById("btn-submit-eval");
 
+  const ratingLabels = {
+    1: "1/5 · Perlu Perbaikan",
+    2: "2/5 · Kurang Aktif",
+    3: "3/5 · Cukup Kontributif",
+    4: "4/5 · Sangat Kontributif",
+    5: "5/5 · Luar Biasa & Inisiator"
+  };
+
   evalCards.forEach((card) => {
     const stars = card.querySelectorAll(".star-btn");
+    const meaningEl = card.querySelector("[data-meaning]");
+
     stars.forEach((star) => {
       star.addEventListener("click", () => {
         const rating = parseInt(star.getAttribute("data-value") || "4", 10);
         card.setAttribute("data-rating", String(rating));
 
+        if (meaningEl && ratingLabels[rating]) {
+          meaningEl.textContent = ratingLabels[rating];
+        }
+
         stars.forEach((s) => {
           const val = parseInt(s.getAttribute("data-value") || "1", 10);
-          if (val <= rating) {
-            s.classList.add("active");
-            s.textContent = "★";
-          } else {
-            s.classList.remove("active");
-            s.textContent = "☆";
-          }
+          s.classList.toggle("active", val <= rating);
         });
       });
     });
@@ -522,12 +696,15 @@ document.addEventListener("DOMContentLoaded", () => {
       const avg = (totalRating / evalCards.length).toFixed(1);
 
       if (evalStatusBanner) {
-        evalStatusBanner.textContent = `✅ Berhasil! Evaluasi rahasia telah dikirim (Rata-rata penilaian: ${avg}/5.0 bintang). Identitasmu tetap dirahasiakan.`;
+        evalStatusBanner.innerHTML = `
+          <span class="status-tag tag-green">Terkirim Rahasia</span>
+          <span>Evaluasi berhasil disimpan (Rata-rata skor kontribusi: <strong class="mono-text">${avg}/5.0</strong>).</span>
+        `;
       }
       if (btnSubmitEval) {
         btnSubmitEval.textContent = "Evaluasi Telah Dikirim";
       }
-      showToast(`✅ Evaluasi rahasia berhasil dikirim! Rata-rata skor kontribusi: ${avg} ★`);
+      showToast(`Evaluasi rahasia berhasil dikirim! Rata-rata skor kontribusi kelompok: ${avg}/5.0`);
     });
   }
 
