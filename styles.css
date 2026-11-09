@@ -634,6 +634,29 @@ body {
   transition: width 0.3s ease;
 }
 
+#dash-progress-bar {
+  width: 40%;
+}
+
+#tm-bar-rian,
+#tm-bar-budi {
+  width: 45%;
+}
+
+#tm-bar-siti,
+#tm-bar-andi {
+  width: 0%;
+}
+
+.app-footer {
+  margin-top: auto;
+  padding: var(--space-2) var(--space-4);
+  border-top: 1px solid var(--color-border);
+  background-color: var(--color-surface);
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+}
+
 /* ==========================================================================
    HALAMAN 1: DASHBOARD KELOMPOK (#view-dashboard)
    ========================================================================== */

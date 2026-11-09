@@ -47,7 +47,15 @@
       <nav class="sidebar-nav" aria-label="Menu Fitur Kelompok">
         <ul class="nav-list">
           <li>
-            <a href="#dashboard" class="nav-link active" aria-current="page" data-target="view-dashboard">
+            <a
+              href="#dashboard"
+              class="nav-link active"
+              aria-current="page"
+              data-target="view-dashboard"
+              data-eyebrow="RINGKASAN PROYEK"
+              data-heading="Dashboard Kelompok"
+              data-subtitle="Pantau progres sub-tugas, kesepakatan jadwal, dan distribusi beban kerja anggota."
+            >
               <svg class="nav-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                 <rect x="3" y="3" width="7" height="7" rx="1"></rect>
                 <rect x="14" y="3" width="7" height="7" rx="1"></rect>
@@ -58,7 +66,14 @@
             </a>
           </li>
           <li>
-            <a href="#task-manager" class="nav-link" data-target="view-task-manager">
+            <a
+              href="#task-manager"
+              class="nav-link"
+              data-target="view-task-manager"
+              data-eyebrow="PEMBAGIAN KERJA MANDIRI"
+              data-heading="Task Manager Kelompok"
+              data-subtitle="Lihat distribusi beban setiap anggota secara transparan, lalu klaim sub-tugas sesuai kapasitasmu."
+            >
               <svg class="nav-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M9 11l3 3L22 4"></path>
                 <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
@@ -68,7 +83,14 @@
             </a>
           </li>
           <li>
-            <a href="#schedule-matcher" class="nav-link" data-target="view-schedule-matcher">
+            <a
+              href="#schedule-matcher"
+              class="nav-link"
+              data-target="view-schedule-matcher"
+              data-eyebrow="PENYELARASAN WAKTU OTOMATIS"
+              data-heading="Schedule Matcher Kelompok"
+              data-subtitle="Status ketersediaan: 4 dari 4 anggota telah mengisi jadwal kosong minggu ini."
+            >
               <svg class="nav-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                 <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
                 <line x1="16" y1="2" x2="16" y2="6"></line>
@@ -79,7 +101,14 @@
             </a>
           </li>
           <li>
-            <a href="#forum-qna" class="nav-link" data-target="view-forum-qna">
+            <a
+              href="#forum-qna"
+              class="nav-link"
+              data-target="view-forum-qna"
+              data-eyebrow="RUANG DISKUSI AMAN"
+              data-heading="Forum Diskusi & Tanya Jawab Materi"
+              data-subtitle="Tanyakan bagian materi yang belum dipahami secara anonim tanpa rasa sungkan."
+            >
               <svg class="nav-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
               </svg>
@@ -87,7 +116,14 @@
             </a>
           </li>
           <li>
-            <a href="#peer-evaluation" class="nav-link" data-target="view-peer-evaluation">
+            <a
+              href="#peer-evaluation"
+              class="nav-link"
+              data-target="view-peer-evaluation"
+              data-eyebrow="PENILAIAN AKHIR PROYEK"
+              data-heading="Peer Evaluation Kontribusi Anggota"
+              data-subtitle="Berikan penilaian objektif secara rahasia berdasarkan kontribusi nyata untuk mencegah free-rider."
+            >
               <svg class="nav-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
                 <circle cx="9" cy="7" r="4"></circle>
@@ -179,19 +215,20 @@
         <div class="toast-feedback" id="toast-feedback" hidden></div>
       </div>
 
-      <!-- Area Konten Utama -->
+      <!-- Area Konten Utama dengan Tepat Satu H1 dan Hierarki Heading Berurutan -->
       <main class="main-content" id="main-content">
+        <header class="page-header">
+          <span class="eyebrow-tag" id="main-eyebrow">RINGKASAN PROYEK</span>
+          <h1 class="page-title" id="main-page-title">Dashboard Kelompok</h1>
+          <p class="page-subtitle" id="main-page-subtitle">
+            Pantau progres sub-tugas, kesepakatan jadwal, dan distribusi beban kerja anggota.
+          </p>
+        </header>
 
         <!-- ==================================================================
              HALAMAN 1: DASHBOARD KELOMPOK (section#view-dashboard)
              ================================================================== -->
-        <section class="page-view active" id="view-dashboard" aria-labelledby="title-dashboard">
-          <header class="page-header">
-            <span class="eyebrow-tag">RINGKASAN PROYEK</span>
-            <h1 class="page-title" id="title-dashboard">Dashboard Kelompok</h1>
-            <p class="page-subtitle">Pantau progres sub-tugas, kesepakatan jadwal, dan distribusi beban kerja anggota.</p>
-          </header>
-
+        <section class="page-view active" id="view-dashboard" aria-label="Dashboard Kelompok">
           <!-- Banner Pengingat Otomatis H-2 Jam (KF-3) -->
           <div class="alert-banner" id="dashboard-reminder-banner">
             <div class="alert-banner-left">
@@ -225,7 +262,7 @@
               </div>
               <h2 class="summary-value" id="dash-progress-text">2/5 Selesai</h2>
               <div class="progress-track">
-                <div class="progress-fill" id="dash-progress-bar" style="width: 40%"></div>
+                <div class="progress-fill" id="dash-progress-bar"></div>
               </div>
               <p class="summary-caption">Target penyelesaian minggu ini</p>
             </article>
@@ -333,17 +370,7 @@
              HALAMAN 2: TASK MANAGER (section#view-task-manager)
              KOMPONEN 3: Panel Beban Tugas & KOMPONEN 4: Kartu Sub-Tugas
              ================================================================== -->
-        <section class="page-view" id="view-task-manager" aria-labelledby="title-task-manager" hidden>
-          <header class="page-header">
-            <span class="eyebrow-tag">PEMBAGIAN KERJA MANDIRI</span>
-            <h1 class="page-title" id="title-task-manager">
-              Task Manager Kelompok
-            </h1>
-            <p class="page-subtitle">
-              Lihat distribusi beban setiap anggota secara transparan, lalu klaim sub-tugas sesuai kapasitasmu.
-            </p>
-          </header>
-
+        <section class="page-view" id="view-task-manager" aria-label="Task Manager Kelompok" hidden>
           <!-- KOMPONEN 3: Bar Beban Tugas Anggota -->
           <section class="card-box workload-box" id="workload-panel" aria-labelledby="workload-heading">
             <div class="workload-top-bar">
@@ -361,7 +388,7 @@
                   <span class="member-count mono-text" id="tm-count-rian">1 tugas</span>
                 </div>
                 <div class="progress-track">
-                  <div class="progress-fill" id="tm-bar-rian" style="width: 45%"></div>
+                  <div class="progress-fill" id="tm-bar-rian"></div>
                 </div>
               </div>
 
@@ -374,7 +401,7 @@
                   <span class="member-count mono-text" id="tm-count-budi">1 tugas</span>
                 </div>
                 <div class="progress-track">
-                  <div class="progress-fill" id="tm-bar-budi" style="width: 45%"></div>
+                  <div class="progress-fill" id="tm-bar-budi"></div>
                 </div>
               </div>
 
@@ -387,7 +414,7 @@
                   <span class="member-count mono-text" id="tm-count-siti">0 tugas</span>
                 </div>
                 <div class="progress-track">
-                  <div class="progress-fill" id="tm-bar-siti" style="width: 0%"></div>
+                  <div class="progress-fill" id="tm-bar-siti"></div>
                 </div>
               </div>
 
@@ -400,14 +427,15 @@
                   <span class="member-count mono-text" id="tm-count-andi">0 tugas</span>
                 </div>
                 <div class="progress-track">
-                  <div class="progress-fill" id="tm-bar-andi" style="width: 0%"></div>
+                  <div class="progress-fill" id="tm-bar-andi"></div>
                 </div>
               </div>
             </div>
           </section>
 
           <!-- KOMPONEN 4: Tab Filter & Daftar Kartu Sub-Tugas Interaktif -->
-          <div class="task-list-section" id="task-list-section">
+          <section class="task-list-section" id="task-list-section" aria-labelledby="task-list-heading">
+            <h2 class="sr-only" id="task-list-heading">Daftar Sub-Tugas Kelompok</h2>
             <div class="filter-tabs" role="tablist" aria-label="Filter status sub-tugas">
               <button type="button" class="filter-tab active" role="tab" aria-selected="true" data-filter="all">
                 Semua <span class="tab-count mono-text" id="badge-all">4</span>
@@ -504,7 +532,7 @@
             <p class="empty-state" id="empty-state" hidden>
               Belum ada sub-tugas pada kategori status ini.
             </p>
-          </div>
+          </section>
 
           <!-- Form Tambah Sub-Tugas Baru (Validasi JS) -->
           <section class="card-box quick-add-box" aria-labelledby="quick-add-heading">
@@ -550,17 +578,7 @@
         <!-- ==================================================================
              HALAMAN 3: SCHEDULE MATCHER (section#view-schedule-matcher)
              ================================================================== -->
-        <section class="page-view" id="view-schedule-matcher" aria-labelledby="title-schedule-matcher" hidden>
-          <header class="page-header">
-            <span class="eyebrow-tag">PENYELARASAN WAKTU OTOMATIS</span>
-            <h1 class="page-title" id="title-schedule-matcher">
-              Schedule Matcher Kelompok
-            </h1>
-            <p class="page-subtitle">
-              Status ketersediaan: 4 dari 4 anggota telah mengisi jadwal kosong minggu ini.
-            </p>
-          </header>
-
+        <section class="page-view" id="view-schedule-matcher" aria-label="Schedule Matcher Kelompok" hidden>
           <div class="schedule-split-grid">
             <!-- Panel Kiri: Input Jadwal Kosong Saya -->
             <div class="card-box">
@@ -723,17 +741,7 @@
              HALAMAN 4: FORUM Q&A ANONIM (section#view-forum-qna)
              KOMPONEN 5: Form Komposer Pertanyaan Anonim & Diskusi + AI Helper
              ================================================================== -->
-        <section class="page-view" id="view-forum-qna" aria-labelledby="title-forum-qna" hidden>
-          <header class="page-header">
-            <span class="eyebrow-tag">RUANG DISKUSI AMAN</span>
-            <h1 class="page-title" id="title-forum-qna">
-              Forum Diskusi &amp; Tanya Jawab Materi
-            </h1>
-            <p class="page-subtitle">
-              Tanyakan bagian materi yang belum dipahami secara anonim tanpa rasa sungkan.
-            </p>
-          </header>
-
+        <section class="page-view" id="view-forum-qna" aria-label="Forum Diskusi dan Tanya Jawab" hidden>
           <!-- KOMPONEN 5: Form Pertanyaan Baru dengan Toggle Switch Anonim -->
           <section class="card-box" aria-labelledby="composer-heading">
             <div class="card-box-header">
@@ -844,17 +852,7 @@
         <!-- ==================================================================
              HALAMAN 5: PEER EVALUATION (section#view-peer-evaluation)
              ================================================================== -->
-        <section class="page-view" id="view-peer-evaluation" aria-labelledby="title-peer-evaluation" hidden>
-          <header class="page-header">
-            <span class="eyebrow-tag">PENILAIAN AKHIR PROYEK</span>
-            <h1 class="page-title" id="title-peer-evaluation">
-              Peer Evaluation Kontribusi Anggota
-            </h1>
-            <p class="page-subtitle">
-              Berikan penilaian objektif secara rahasia berdasarkan kontribusi nyata untuk mencegah free-rider.
-            </p>
-          </header>
-
+        <section class="page-view" id="view-peer-evaluation" aria-label="Peer Evaluation Kontribusi Anggota" hidden>
           <div class="status-info-banner" id="eval-status-banner">
             <span class="status-tag tag-green">Proyek Selesai (5/5)</span>
             <span>Identitas penilai dirahasiakan dan skor kontribusi otomatis dirata-rata oleh sistem.</span>
@@ -972,6 +970,11 @@
         </section>
 
       </main>
+
+      <!-- Footer Semantik -->
+      <footer class="app-footer">
+        <p>&copy; 2026 TemanBelajar | Ruang Kolaborasi Tugas Kelompok UX (Kelompok 4).</p>
+      </footer>
     </div>
   </div>
 

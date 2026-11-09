@@ -58,6 +58,10 @@ document.addEventListener("DOMContentLoaded", () => {
     btnMenuToggle.setAttribute("aria-expanded", "false");
   }
 
+  const mainEyebrow = document.getElementById("main-eyebrow");
+  const mainPageTitle = document.getElementById("main-page-title");
+  const mainPageSubtitle = document.getElementById("main-page-subtitle");
+
   function switchPageView(targetViewId) {
     pageViews.forEach((view) => {
       const isMatch = view.id === targetViewId;
@@ -70,6 +74,9 @@ document.addEventListener("DOMContentLoaded", () => {
       link.classList.toggle("active", isMatch);
       if (isMatch) {
         link.setAttribute("aria-current", "page");
+        if (mainEyebrow) mainEyebrow.textContent = link.getAttribute("data-eyebrow") || "";
+        if (mainPageTitle) mainPageTitle.textContent = link.getAttribute("data-heading") || "";
+        if (mainPageSubtitle) mainPageSubtitle.textContent = link.getAttribute("data-subtitle") || "";
       } else {
         link.removeAttribute("aria-current");
       }
@@ -559,7 +566,7 @@ document.addEventListener("DOMContentLoaded", () => {
           ${
             isAnonymous
               ? `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>`
-              : `<span class="mono-text" style="font-size:0.75rem;font-weight:700;">RN</span>`
+              : `<span class="mono-text">RN</span>`
           }
         </span>
         <div>
