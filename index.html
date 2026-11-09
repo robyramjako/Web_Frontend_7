@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TemanBelajar — Kolaborasi Tugas Kelompok UX</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-layout">
+    <!-- ====================================================================
+         KOMPONEN 1: Navigasi Sidebar Kiri Tetap & Drawer Mobile (aside#sidebar)
+         ==================================================================== -->
+    <aside class="sidebar" id="sidebar" aria-label="Navigasi Utama">
+      <div class="sidebar-brand">
+        <span class="brand-icon" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+          </svg>
+        </span>
+        <span class="brand-name">TemanBelajar</span>
+        <button
+          type="button"
+          class="btn-close-sidebar"
+          id="btn-close-sidebar"
+          aria-label="Tutup menu navigasi"
+        >
+          ✕
+        </button>
+      </div>
+
+      <nav class="sidebar-nav" aria-label="Menu Fitur Kelompok">
+        <ul class="nav-list">
+          <li>
+            <a href="#dashboard" class="nav-link active" aria-current="page" data-target="view-dashboard">
+              <span class="nav-icon" aria-hidden="true">⊞</span>
+              <span>Dashboard Kelompok</span>
+            </a>
+          </li>
+          <li>
+            <a href="#task-manager" class="nav-link" data-target="view-task-manager">
+              <span class="nav-icon" aria-hidden="true">☰</span>
+              <span>Task Manager</span>
+            </a>
+          </li>
+          <li>
+            <a href="#schedule-matcher" class="nav-link" data-target="view-schedule-matcher">
+              <span class="nav-icon" aria-hidden="true">📅</span>
+              <span>Schedule Matcher</span>
+            </a>
+          </li>
+          <li>
+            <a href="#forum-qna" class="nav-link" data-target="view-forum-qna">
+              <span class="nav-icon" aria-hidden="true">💬</span>
+              <span>Forum Q&amp;A Anonim</span>
+            </a>
+          </li>
+          <li>
+            <a href="#peer-evaluation" class="nav-link" data-target="view-peer-evaluation">
+              <span class="nav-icon" aria-hidden="true">👥</span>
+              <span>Peer Evaluation</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <div class="sidebar-footer">
+        <p class="collab-title">Ruang kolaborasi</p>
+        <p class="collab-meta">Kelompok 4 · 4 anggota</p>
+      </div>
+    </aside>
+
+    <!-- Backdrop gelap untuk mode mobile -->
+    <div class="sidebar-backdrop" id="sidebar-backdrop" hidden></div>
+
+    <div class="main-wrapper">
+      <!-- ====================================================================
+           KOMPONEN 2: Top Header Bar & Notifikasi Global (header.top-header)
+           ==================================================================== -->
+      <header class="top-header">
+        <div class="header-left">
+          <button
+            type="button"
+            class="btn-menu-toggle"
+            id="btn-menu-toggle"
+            aria-label="Buka menu navigasi"
+            aria-expanded="false"
+            aria-controls="sidebar"
+          >
+            ☰
+          </button>
+          <span class="group-title">Kelompok 4 - Proyek UX</span>
+        </div>
+
+        <div class="header-right">
+          <button
+            type="button"
+            class="btn-notification"
+            id="btn-notification"
+            aria-label="Lihat pengingat jadwal kumpul"
+            title="Pengingat Jadwal Kumpul"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+            </svg>
+            <span class="notif-dot" id="notif-dot"></span>
+          </button>
+
+          <div class="header-divider" aria-hidden="true"></div>
+
+          <div class="user-profile" aria-label="Profil Pengguna Aktif">
+            <span class="avatar-circle" aria-hidden="true">R</span>
+            <span class="user-name">Rian (Smt 3)</span>
+            <span class="chevron-down" aria-hidden="true">⌄</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- Toast Feedback Global -->
+      <div class="toast-container" aria-live="polite" role="status">
+        <div class="toast-feedback" id="toast-feedback" hidden></div>
+      </div>
+
+      <!-- Area Konten Utama yang Memuat Ke-5 Halaman Wireframe -->
+      <main class="main-content" id="main-content">
+
+        <!-- ==================================================================
+             HALAMAN 1: DASHBOARD KELOMPOK (section#view-dashboard)
+             ================================================================== -->
+        <section class="page-view active" id="view-dashboard" aria-labelledby="title-dashboard">
+          <header class="page-header">
+            <h1 class="page-title" id="title-dashboard">Dashboard Kelompok</h1>
+            <p class="page-subtitle">Pantau progres, jadwal, dan pembagian tugas kelompokmu.</p>
+          </header>
+
+          <!-- Banner Pengingat Otomatis H-2 Jam (KF-3) -->
+          <div class="alert-banner" id="dashboard-reminder-banner">
+            <div class="alert-banner-left">
+              <span class="alert-icon" aria-hidden="true">🔔</span>
+              <p class="alert-text" id="dashboard-reminder-text">
+                <strong>Pengingat Otomatis (H-2 Jam):</strong> Jadwal Kumpul Kelompok hari ini pukul 19:00 WIB
+              </p>
+            </div>
+            <button type="button" class="btn-primary" id="btn-goto-schedule">
+              Lihat Detail
+            </button>
+          </div>
+
+          <!-- 3 Kartu Ringkasan Metrik (4+4+4 Kolom) -->
+          <div class="summary-cards-grid">
+            <article class="summary-card">
+              <p class="summary-label">Progres Sub-Tugas:</p>
+              <h2 class="summary-value" id="dash-progress-text">2/5 Selesai (40%)</h2>
+              <div class="progress-track">
+                <div class="progress-fill" id="dash-progress-bar" style="width: 40%"></div>
+              </div>
+              <p class="summary-caption">Progres keseluruhan proyek</p>
+            </article>
+
+            <article class="summary-card">
+              <p class="summary-label">Jadwal Kumpul Terdekat:</p>
+              <h2 class="summary-value" id="dash-schedule-title">Rabu, 19:00 WIB</h2>
+              <p class="summary-caption" id="dash-schedule-sub">Diskusi kelompok · 19:00–21:00</p>
+            </article>
+
+            <article class="summary-card">
+              <p class="summary-label">Keseimbangan Beban:</p>
+              <h2 class="summary-value" id="dash-balance-title">Perlu Klaim Tugas</h2>
+              <p class="summary-caption" id="dash-balance-sub">Siti dan Andi belum memiliki tugas.</p>
+            </article>
+          </div>
+
+          <!-- Grid Bawah Dashboard (8 Kolom Kiri + 4 Kolom Kanan) -->
+          <div class="dashboard-bottom-grid">
+            <section class="card-box" aria-labelledby="dash-unclaimed-heading">
+              <div class="card-box-header">
+                <h2 class="section-heading" id="dash-unclaimed-heading">Sub-Tugas Belum Diklaim</h2>
+                <span class="pill-badge" id="dash-unclaimed-badge">2 tersedia</span>
+              </div>
+
+              <div class="unclaimed-preview-list" id="dash-unclaimed-list">
+                <!-- Dirender otomatis oleh script.js dari state tugas -->
+              </div>
+
+              <div class="card-box-footer">
+                <button type="button" class="btn-primary" id="btn-goto-task-manager">
+                  Buka Task Manager
+                </button>
+              </div>
+            </section>
+
+            <section class="card-box" aria-labelledby="dash-member-heading">
+              <h2 class="section-heading" id="dash-member-heading">Distribusi Anggota</h2>
+              <ul class="member-dist-list">
+                <li class="member-dist-item">
+                  <span class="member-dist-name">Rian</span>
+                  <span class="member-dist-count" id="dash-count-rian">1 tugas</span>
+                </li>
+                <li class="member-dist-item">
+                  <span class="member-dist-name">Budi</span>
+                  <span class="member-dist-count" id="dash-count-budi">1 tugas</span>
+                </li>
+                <li class="member-dist-item">
+                  <span class="member-dist-name">Siti</span>
+                  <span class="member-dist-count" id="dash-count-siti">0 tugas</span>
+                </li>
+                <li class="member-dist-item">
+                  <span class="member-dist-name">Andi</span>
+                  <span class="member-dist-count" id="dash-count-andi">0 tugas</span>
+                </li>
+              </ul>
+              <p class="card-helper-note">
+                Klaim tugas sesuai kapasitas agar kontribusi kelompok lebih merata.
+              </p>
+            </section>
+          </div>
+        </section>
+
+        <!-- ==================================================================
+             HALAMAN 2: TASK MANAGER — KLAIM TUGAS (section#view-task-manager)
+             KOMPONEN 3: Panel Beban Tugas Anggota & KOMPONEN 4: Kartu Tugas
+             ================================================================== -->
+        <section class="page-view" id="view-task-manager" aria-labelledby="title-task-manager" hidden>
+          <header class="page-header">
+            <h1 class="page-title" id="title-task-manager">
+              Task Manager — Pembagian Beban Tugas Transparan
+            </h1>
+            <p class="page-subtitle">
+              Lihat beban setiap anggota, lalu klaim tugas sesuai kapasitasmu.
+            </p>
+          </header>
+
+          <!-- KOMPONEN 3: Bar Beban Tugas Anggota -->
+          <section class="card-box workload-box" id="workload-panel" aria-labelledby="workload-heading">
+            <h2 class="section-subheading" id="workload-heading">Beban tugas anggota</h2>
+            <div class="workload-grid">
+              <div class="member-workload">
+                <div class="member-meta">
+                  <span class="member-name">Rian (Kamu)</span>
+                  <span class="member-count" id="tm-count-rian">1 tugas</span>
+                </div>
+                <div class="progress-track">
+                  <div class="progress-fill" id="tm-bar-rian" style="width: 35%"></div>
+                </div>
+              </div>
+
+              <div class="member-workload">
+                <div class="member-meta">
+                  <span class="member-name">Budi</span>
+                  <span class="member-count" id="tm-count-budi">1 tugas</span>
+                </div>
+                <div class="progress-track">
+                  <div class="progress-fill" id="tm-bar-budi" style="width: 35%"></div>
+                </div>
+              </div>
+
+              <div class="member-workload">
+                <div class="member-meta">
+                  <span class="member-name">Siti</span>
+                  <span class="member-count" id="tm-count-siti">0 tugas</span>
+                </div>
+                <div class="progress-track">
+                  <div class="progress-fill" id="tm-bar-siti" style="width: 0%"></div>
+                </div>
+              </div>
+
+              <div class="member-workload">
+                <div class="member-meta">
+                  <span class="member-name">Andi</span>
+                  <span class="member-count" id="tm-count-andi">0 tugas</span>
+                </div>
+                <div class="progress-track">
+                  <div class="progress-fill" id="tm-bar-andi" style="width: 0%"></div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- KOMPONEN 4: Tab Filter & Daftar Kartu Sub-Tugas Interaktif -->
+          <div class="task-list-section" id="task-list-section">
+            <div class="filter-tabs" role="tablist" aria-label="Filter status sub-tugas">
+              <button type="button" class="filter-tab active" role="tab" aria-selected="true" data-filter="all">
+                Semua (<span id="badge-all">4</span>)
+              </button>
+              <button type="button" class="filter-tab" role="tab" aria-selected="false" data-filter="tersedia">
+                Tersedia (<span id="badge-tersedia">2</span>)
+              </button>
+              <button type="button" class="filter-tab" role="tab" aria-selected="false" data-filter="dikerjakan">
+                Dikerjakan (<span id="badge-dikerjakan">2</span>)
+              </button>
+              <button type="button" class="filter-tab" role="tab" aria-selected="false" data-filter="selesai">
+                Selesai (<span id="badge-selesai">0</span>)
+              </button>
+            </div>
+
+            <div class="task-cards" id="task-cards-container">
+              <!-- Kartu Tugas 1 -->
+              <article class="task-card" data-id="1" data-status="tersedia" data-owner="" data-title="Menyusun Sitemap & Navigasi" data-weight="Sedang" data-deadline="30 Okt">
+                <div class="task-info">
+                  <div class="task-title-row">
+                    <h3 class="task-title">Menyusun Sitemap &amp; Navigasi</h3>
+                    <span class="status-badge badge-tersedia">Tersedia</span>
+                  </div>
+                  <div class="task-meta">
+                    <span>Beban: Sedang</span>
+                    <span>Deadline: 30 Okt</span>
+                    <span class="task-pic">Penanggung Jawab: <span>Belum ada</span></span>
+                  </div>
+                </div>
+                <div class="task-actions">
+                  <button type="button" class="btn-primary btn-claim">Klaim Tugas</button>
+                </div>
+              </article>
+
+              <!-- Kartu Tugas 2 -->
+              <article class="task-card" data-id="2" data-status="tersedia" data-owner="" data-title="Merancang Sistem Grid & Spacing" data-weight="Ringan" data-deadline="30 Okt">
+                <div class="task-info">
+                  <div class="task-title-row">
+                    <h3 class="task-title">Merancang Sistem Grid &amp; Spacing</h3>
+                    <span class="status-badge badge-tersedia">Tersedia</span>
+                  </div>
+                  <div class="task-meta">
+                    <span>Beban: Ringan</span>
+                    <span>Deadline: 30 Okt</span>
+                    <span class="task-pic">Penanggung Jawab: <span>Belum ada</span></span>
+                  </div>
+                </div>
+                <div class="task-actions">
+                  <button type="button" class="btn-primary btn-claim">Klaim Tugas</button>
+                </div>
+              </article>
+
+              <!-- Kartu Tugas 3 -->
+              <article class="task-card" data-id="3" data-status="dikerjakan" data-owner="Rian (Kamu)" data-title="Membuat Wireframe Utama" data-weight="Berat" data-deadline="31 Okt">
+                <div class="task-info">
+                  <div class="task-title-row">
+                    <h3 class="task-title">Membuat Wireframe Utama</h3>
+                    <span class="status-badge badge-dikerjakan">Dikerjakan</span>
+                  </div>
+                  <div class="task-meta">
+                    <span>Beban: Berat</span>
+                    <span>Deadline: 31 Okt</span>
+                    <span class="task-pic">Penanggung Jawab: <span>Rian (Kamu)</span></span>
+                  </div>
+                </div>
+                <div class="task-actions">
+                  <button type="button" class="btn-secondary btn-complete">Tandai Selesai</button>
+                </div>
+              </article>
+
+              <!-- Kartu Tugas 4 -->
+              <article class="task-card" data-id="4" data-status="dikerjakan" data-owner="Budi" data-title="Riset Data PT M2" data-weight="Sedang" data-deadline="28 Okt">
+                <div class="task-info">
+                  <div class="task-title-row">
+                    <h3 class="task-title">Riset Data PT M2</h3>
+                    <span class="status-badge badge-dikerjakan">Dikerjakan</span>
+                  </div>
+                  <div class="task-meta">
+                    <span>Beban: Sedang</span>
+                    <span>Deadline: 28 Okt</span>
+                    <span class="task-pic">Penanggung Jawab: <span>Budi</span></span>
+                  </div>
+                </div>
+                <div class="task-actions"></div>
+              </article>
+            </div>
+
+            <p class="empty-state" id="empty-state" hidden>
+              Belum ada sub-tugas pada kategori status ini.
+            </p>
+          </div>
+
+          <p class="helper-footnote">
+            Klaim tugas untuk menjadi penanggung jawab. Semua anggota dapat melihat pembagian beban.
+          </p>
+        </section>
+
+        <!-- ==================================================================
+             HALAMAN 3: SCHEDULE MATCHER (section#view-schedule-matcher)
+             Matriks Input Jadwal Pribadi & Peta Irisan Waktu Kelompok (KF-2)
+             ================================================================== -->
+        <section class="page-view" id="view-schedule-matcher" aria-labelledby="title-schedule-matcher" hidden>
+          <header class="page-header">
+            <h1 class="page-title" id="title-schedule-matcher">
+              Schedule Matcher — Pencocokan Jadwal Otomatis
+            </h1>
+            <p class="page-subtitle">
+              Status: 4 dari 4 Anggota Telah Mengisi Jadwal Kosong
+            </p>
+          </header>
+
+          <div class="schedule-split-grid">
+            <!-- Panel Kiri: Input Jadwal Kosong Saya -->
+            <div class="card-box">
+              <h2 class="section-heading">Input Jadwal Kosong Saya</h2>
+              <p class="card-subtitle">Pilih waktu saat kamu dapat berkumpul.</p>
+
+              <div class="schedule-table" role="grid" aria-label="Tabel Input Jadwal Kosong Saya">
+                <div class="schedule-header-row">
+                  <span class="time-col-label">WIB</span>
+                  <span>Senin</span>
+                  <span>Selasa</span>
+                  <span>Rabu</span>
+                  <span>Kamis</span>
+                  <span>Jumat</span>
+                </div>
+
+                <!-- Baris 10:00 -->
+                <div class="schedule-row">
+                  <span class="time-label">10:00</span>
+                  <button type="button" class="slot-btn selected" data-day="Senin" data-time="10:00" data-others="1">✓</button>
+                  <button type="button" class="slot-btn" data-day="Selasa" data-time="10:00" data-others="1">—</button>
+                  <button type="button" class="slot-btn" data-day="Rabu" data-time="10:00" data-others="0">—</button>
+                  <button type="button" class="slot-btn" data-day="Kamis" data-time="10:00" data-others="1">—</button>
+                  <button type="button" class="slot-btn selected" data-day="Jumat" data-time="10:00" data-others="1">✓</button>
+                </div>
+
+                <!-- Baris 13:00 -->
+                <div class="schedule-row">
+                  <span class="time-label">13:00</span>
+                  <button type="button" class="slot-btn" data-day="Senin" data-time="13:00" data-others="1">—</button>
+                  <button type="button" class="slot-btn selected" data-day="Selasa" data-time="13:00" data-others="1">✓</button>
+                  <button type="button" class="slot-btn" data-day="Rabu" data-time="13:00" data-others="2">—</button>
+                  <button type="button" class="slot-btn" data-day="Kamis" data-time="13:00" data-others="0">—</button>
+                  <button type="button" class="slot-btn" data-day="Jumat" data-time="13:00" data-others="1">—</button>
+                </div>
+
+                <!-- Baris 16:00 -->
+                <div class="schedule-row">
+                  <span class="time-label">16:00</span>
+                  <button type="button" class="slot-btn" data-day="Senin" data-time="16:00" data-others="0">—</button>
+                  <button type="button" class="slot-btn" data-day="Selasa" data-time="16:00" data-others="1">—</button>
+                  <button type="button" class="slot-btn selected" data-day="Rabu" data-time="16:00" data-others="2">✓</button>
+                  <button type="button" class="slot-btn" data-day="Kamis" data-time="16:00" data-others="2">—</button>
+                  <button type="button" class="slot-btn" data-day="Jumat" data-time="16:00" data-others="1">—</button>
+                </div>
+
+                <!-- Baris 19:00 -->
+                <div class="schedule-row">
+                  <span class="time-label">19:00</span>
+                  <button type="button" class="slot-btn selected" data-day="Senin" data-time="19:00" data-others="1">✓</button>
+                  <button type="button" class="slot-btn" data-day="Selasa" data-time="19:00" data-others="2">—</button>
+                  <button type="button" class="slot-btn selected" data-day="Rabu" data-time="19:00" data-others="3">✓</button>
+                  <button type="button" class="slot-btn" data-day="Kamis" data-time="19:00" data-others="1">—</button>
+                  <button type="button" class="slot-btn" data-day="Jumat" data-time="19:00" data-others="0">—</button>
+                </div>
+              </div>
+
+              <div class="schedule-legend">
+                <span class="legend-swatch swatch-dark"></span>
+                <span>Terpilih = jadwal kosong saya</span>
+              </div>
+
+              <div class="schedule-info-box" id="my-schedule-summary">
+                <strong><span id="selected-slots-count">6</span> slot waktu dipilih</strong>
+                <p id="selected-slots-detail">Termasuk Rabu, 19:00 - 21:00.</p>
+              </div>
+
+              <button type="button" class="btn-primary" id="btn-save-schedule">
+                Simpan Jadwal Kosong
+              </button>
+            </div>
+
+            <!-- Panel Kanan: Peta Irisan Waktu Kelompok -->
+            <div class="card-box">
+              <h2 class="section-heading">Peta Irisan Waktu Kelompok</h2>
+              <p class="card-subtitle">Setiap sel menampilkan jumlah anggota yang cocok.</p>
+
+              <div class="schedule-table" id="group-heatmap-grid" aria-label="Peta Irisan Waktu Kelompok">
+                <div class="schedule-header-row">
+                  <span class="time-col-label">WIB</span>
+                  <span>Senin</span>
+                  <span>Selasa</span>
+                  <span>Rabu</span>
+                  <span>Kamis</span>
+                  <span>Jumat</span>
+                </div>
+
+                <!-- Baris 10:00 -->
+                <div class="schedule-row">
+                  <span class="time-label">10:00</span>
+                  <div class="heat-cell heat-mid" data-heat="Senin-10:00">2/4</div>
+                  <div class="heat-cell" data-heat="Selasa-10:00">1/4</div>
+                  <div class="heat-cell" data-heat="Rabu-10:00">0/4</div>
+                  <div class="heat-cell" data-heat="Kamis-10:00">1/4</div>
+                  <div class="heat-cell heat-mid" data-heat="Jumat-10:00">2/4</div>
+                </div>
+
+                <!-- Baris 13:00 -->
+                <div class="schedule-row">
+                  <span class="time-label">13:00</span>
+                  <div class="heat-cell" data-heat="Senin-13:00">1/4</div>
+                  <div class="heat-cell heat-mid" data-heat="Selasa-13:00">2/4</div>
+                  <div class="heat-cell heat-mid" data-heat="Rabu-13:00">2/4</div>
+                  <div class="heat-cell" data-heat="Kamis-13:00">0/4</div>
+                  <div class="heat-cell" data-heat="Jumat-13:00">1/4</div>
+                </div>
+
+                <!-- Baris 16:00 -->
+                <div class="schedule-row">
+                  <span class="time-label">16:00</span>
+                  <div class="heat-cell" data-heat="Senin-16:00">0/4</div>
+                  <div class="heat-cell" data-heat="Selasa-16:00">1/4</div>
+                  <div class="heat-cell heat-mid" data-heat="Rabu-16:00">3/4</div>
+                  <div class="heat-cell heat-mid" data-heat="Kamis-16:00">2/4</div>
+                  <div class="heat-cell" data-heat="Jumat-16:00">1/4</div>
+                </div>
+
+                <!-- Baris 19:00 -->
+                <div class="schedule-row">
+                  <span class="time-label">19:00</span>
+                  <div class="heat-cell heat-mid" data-heat="Senin-19:00">2/4</div>
+                  <div class="heat-cell heat-mid" data-heat="Selasa-19:00">2/4</div>
+                  <div class="heat-cell heat-match" data-heat="Rabu-19:00">4/4</div>
+                  <div class="heat-cell" data-heat="Kamis-19:00">1/4</div>
+                  <div class="heat-cell" data-heat="Jumat-19:00">0/4</div>
+                </div>
+              </div>
+
+              <div class="schedule-legend">
+                <span class="legend-swatch swatch-green"></span>
+                <span>4/4 = semua anggota tersedia</span>
+              </div>
+
+              <div class="schedule-match-box" id="best-match-box">
+                <strong id="best-match-title">Rabu, 19:00 - 21:00</strong>
+                <p id="best-match-subtitle">4/4 Anggota Cocok!</p>
+              </div>
+
+              <button type="button" class="btn-primary" id="btn-confirm-schedule">
+                Tetapkan Jadwal Kumpul
+              </button>
+            </div>
+          </div>
+
+          <p class="helper-footnote">
+            Jadwal kumpul yang ditetapkan akan tampil di Dashboard Kelompok.
+          </p>
+        </section>
+
+        <!-- ==================================================================
+             HALAMAN 4: FORUM Q&A ANONIM (section#view-forum-qna)
+             KOMPONEN 5: Form Komposer Pertanyaan Anonim & Diskusi + AI Helper
+             ================================================================== -->
+        <section class="page-view" id="view-forum-qna" aria-labelledby="title-forum-qna" hidden>
+          <header class="page-header">
+            <h1 class="page-title" id="title-forum-qna">
+              Forum Diskusi &amp; Tanya Jawab Materi
+            </h1>
+            <p class="page-subtitle">
+              Tanyakan yang belum dipahami. Belajar bersama tanpa ragu.
+            </p>
+          </header>
+
+          <!-- KOMPONEN 5: Form Pertanyaan Baru dengan Validasi & Toggle Anonim -->
+          <section class="card-box" aria-labelledby="composer-heading">
+            <h2 class="section-subheading" id="composer-heading">Pertanyaan baru</h2>
+
+            <form id="qna-form" class="qna-form" novalidate>
+              <label for="qna-input" class="sr-only">Tulis pertanyaan materi</label>
+              <textarea
+                id="qna-input"
+                class="qna-textarea"
+                rows="3"
+                placeholder="Tulis pertanyaan materi atau bagian tugas yang belum dipahami..."
+                required
+              >Teman-teman, untuk format Given-When-Then di bagian Acceptance Criteria apakah seperti ini?</textarea>
+
+              <label class="checkbox-row" for="qna-anon-checkbox">
+                <input type="checkbox" id="qna-anon-checkbox" checked />
+                <span>Kirim sebagai Anonim (Sembunyikan nama &amp; foto profil)</span>
+              </label>
+
+              <p class="form-error" id="qna-error" role="alert" hidden></p>
+
+              <div class="composer-footer">
+                <p class="privacy-note" id="qna-privacy-note">
+                  🛡️ Identitasmu tidak ditampilkan pada kiriman.
+                </p>
+                <div class="composer-actions">
+                  <button type="button" class="btn-secondary" id="btn-ask-ai">
+                    Tanya AI
+                  </button>
+                  <button type="submit" class="btn-primary" id="btn-submit-qna">
+                    Kirim Pertanyaan
+                  </button>
+                </div>
+              </div>
+            </form>
+          </section>
+
+          <section class="discussion-section" aria-labelledby="feed-heading">
+            <h2 class="section-heading" id="feed-heading">Diskusi terbaru</h2>
+
+            <div class="discussion-feed" id="discussion-feed">
+              <article class="discussion-card">
+                <div class="post-author-row">
+                  <span class="anon-avatar" aria-hidden="true">👤</span>
+                  <div>
+                    <h3 class="post-author">Anggota Anonim</h3>
+                    <p class="post-time">Hari ini, 14:20 · Materi UX</p>
+                  </div>
+                </div>
+
+                <p class="post-body">
+                  Bagaimana menulis Acceptance Criteria dengan Given-When-Then? Misalnya untuk fitur klaim tugas, apa yang perlu ditulis agar hasilnya bisa diuji?
+                </p>
+
+                <div class="ai-helper-box">
+                  <p class="ai-helper-title">✨ AI Helper</p>
+                  <p class="ai-helper-text">
+                    Gunakan Given untuk kondisi awal, When untuk aksi, dan Then untuk hasil yang dapat diuji.
+                  </p>
+                  <p class="ai-helper-text">
+                    Given: tugas berstatus Tersedia dan belum memiliki penanggung jawab.<br />
+                    When: anggota memilih "Klaim Tugas".<br />
+                    Then: anggota menjadi penanggung jawab dan status berubah menjadi Dikerjakan.
+                  </p>
+                </div>
+
+                <div class="peer-reply">
+                  <span class="avatar-circle small-avatar" aria-hidden="true">B</span>
+                  <div class="reply-content">
+                    <p class="reply-author">
+                      <strong>Budi</strong> <span>· Hari ini, 14:25</span>
+                    </p>
+                    <p class="reply-text">
+                      Setuju! Tambahkan skenario saat tugas sudah diklaim anggota lain: klaim ditolak dan penanggung jawab tetap. Jadi alur berhasil dan pengecualiannya sama-sama teruji.
+                    </p>
+                  </div>
+                </div>
+              </article>
+            </div>
+          </section>
+        </section>
+
+        <!-- ==================================================================
+             HALAMAN 5: PEER EVALUATION (section#view-peer-evaluation)
+             Rating Bintang Interaktif Rahasia di Akhir Proyek (KF-5)
+             ================================================================== -->
+        <section class="page-view" id="view-peer-evaluation" aria-labelledby="title-peer-evaluation" hidden>
+          <header class="page-header">
+            <h1 class="page-title" id="title-peer-evaluation">
+              Peer Evaluation — Evaluasi Kontribusi Anggota
+            </h1>
+            <p class="page-subtitle">
+              Berikan penilaian objektif secara rahasia untuk mencegah free-rider.
+            </p>
+          </header>
+
+          <div class="status-info-banner" id="eval-status-banner">
+            Status Proyek: Selesai (5/5 Sub-Tugas) · Identitas penilai dirahasiakan &amp; nilai otomatis dirata-rata oleh sistem.
+          </div>
+
+          <form id="peer-eval-form" class="eval-cards-list" novalidate>
+            <!-- Evaluasi Budi -->
+            <article class="card-box eval-card" data-member="Budi" data-rating="4">
+              <div class="eval-card-top">
+                <h2 class="eval-member-title">Budi · 2 tugas selesai</h2>
+                <div class="eval-rating-wrap">
+                  <span class="eval-rating-label">Penilaian kontribusi</span>
+                  <div class="star-group" role="radiogroup" aria-label="Rating kontribusi Budi">
+                    <button type="button" class="star-btn active" data-value="1" aria-label="1 bintang">★</button>
+                    <button type="button" class="star-btn active" data-value="2" aria-label="2 bintang">★</button>
+                    <button type="button" class="star-btn active" data-value="3" aria-label="3 bintang">★</button>
+                    <button type="button" class="star-btn active" data-value="4" aria-label="4 bintang">★</button>
+                    <button type="button" class="star-btn" data-value="5" aria-label="5 bintang">☆</button>
+                  </div>
+                </div>
+              </div>
+              <label class="eval-input-label" for="feedback-budi">Masukan untuk Budi (opsional)</label>
+              <input
+                type="text"
+                id="feedback-budi"
+                class="eval-text-input"
+                placeholder="Tulis masukan singkat (opsional)"
+              />
+            </article>
+
+            <!-- Evaluasi Siti -->
+            <article class="card-box eval-card" data-member="Siti" data-rating="4">
+              <div class="eval-card-top">
+                <h2 class="eval-member-title">Siti · 1 tugas selesai</h2>
+                <div class="eval-rating-wrap">
+                  <span class="eval-rating-label">Penilaian kontribusi</span>
+                  <div class="star-group" role="radiogroup" aria-label="Rating kontribusi Siti">
+                    <button type="button" class="star-btn active" data-value="1" aria-label="1 bintang">★</button>
+                    <button type="button" class="star-btn active" data-value="2" aria-label="2 bintang">★</button>
+                    <button type="button" class="star-btn active" data-value="3" aria-label="3 bintang">★</button>
+                    <button type="button" class="star-btn active" data-value="4" aria-label="4 bintang">★</button>
+                    <button type="button" class="star-btn" data-value="5" aria-label="5 bintang">☆</button>
+                  </div>
+                </div>
+              </div>
+              <label class="eval-input-label" for="feedback-siti">Masukan untuk Siti (opsional)</label>
+              <input
+                type="text"
+                id="feedback-siti"
+                class="eval-text-input"
+                placeholder="Tulis masukan singkat (opsional)"
+              />
+            </article>
+
+            <!-- Evaluasi Andi -->
+            <article class="card-box eval-card" data-member="Andi" data-rating="4">
+              <div class="eval-card-top">
+                <h2 class="eval-member-title">Andi · 1 tugas selesai</h2>
+                <div class="eval-rating-wrap">
+                  <span class="eval-rating-label">Penilaian kontribusi</span>
+                  <div class="star-group" role="radiogroup" aria-label="Rating kontribusi Andi">
+                    <button type="button" class="star-btn active" data-value="1" aria-label="1 bintang">★</button>
+                    <button type="button" class="star-btn active" data-value="2" aria-label="2 bintang">★</button>
+                    <button type="button" class="star-btn active" data-value="3" aria-label="3 bintang">★</button>
+                    <button type="button" class="star-btn active" data-value="4" aria-label="4 bintang">★</button>
+                    <button type="button" class="star-btn" data-value="5" aria-label="5 bintang">☆</button>
+                  </div>
+                </div>
+              </div>
+              <label class="eval-input-label" for="feedback-andi">Masukan untuk Andi (opsional)</label>
+              <input
+                type="text"
+                id="feedback-andi"
+                class="eval-text-input"
+                placeholder="Tulis masukan singkat (opsional)"
+              />
+            </article>
+
+            <div class="eval-submit-row">
+              <button type="submit" class="btn-primary" id="btn-submit-eval">
+                Kirim Evaluasi Rahasia
+              </button>
+            </div>
+          </form>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
